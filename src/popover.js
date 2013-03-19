@@ -57,8 +57,18 @@
 	
 	$.extend(window.Popover.prototype, {
 		
-		show: function()
+		show: function(options)
 		{
+            if(options)
+            {
+                if(options.id) this.window.attr('id', 'popover-'+options.id);
+                if(options.className) this.window.attr('class', 'popover ' + options.className + ' ' + (options.id || this.options.id));
+                if(options.url || options.html) this.content = null;
+                if(options.url) this.options.html = null;
+                if(options.html) this.options.url = null;
+                this.options = $.extend(this.options, options);
+            }
+
 			if(!this.content)
 			{
 				this.load();
@@ -77,7 +87,7 @@
 		load: function()
 		{
 			this._showWindow();
-			this.window.addClass('loading').css('height', this.window.height());
+			this.window.addClass('loading').css('height', this.window.height()).html('');
 		},
 
         /**
@@ -226,7 +236,7 @@
         },
 
         /**
-         * Indicates whether the popover is active (the foremost popover)
+         * Indicates whether the popover is active (the top-most popover)
          * @returns {boolean}
          */
         isActive: function() {

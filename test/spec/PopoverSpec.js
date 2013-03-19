@@ -458,4 +458,98 @@ $(function() {
         });
     });
 
+    describe("Popover with content replaced", function() {
+
+        var popover, selector;
+        var onContentSpy = sinon.spy(),
+            onInjectSpy = sinon.spy(),
+            onErrorSpy = sinon.spy(),
+            onShowSpy = sinon.spy();
+
+        it("should show the popover", function() {
+
+            var content = '<p>Popover content</p>';
+
+            popover = new Popover({
+                id: 'html-id',
+                className: 'html-class',
+                html: content,
+                width: 300,
+                onContent: onContentSpy,
+                onInject: onInjectSpy,
+                onError: onErrorSpy,
+                onShow: onShowSpy
+            });
+
+            selector = '#popovers .active #popover-html-id.popover.html-id.html-class';
+
+            expect($(selector).length).toBe(0);
+
+            popover.show();
+
+            expect($(selector).length).toBe(1);
+            expect($(selector).is(':visible')).toBe(true);
+            expect($(selector).css('width')).toBe('300px');
+            expect($(selector).html()).toBe(content);
+
+        });
+
+        it("should be removed from the page", function() {
+            popover.close();
+            waitsFor(function() {
+                return $(selector).length == 0;
+            }, "Popover should close", 500);
+        });
+
+        var outerHeight;
+
+        it("should show new HTML content", function() {
+
+            var content = '<p>New popover<br>content</p>';
+            selector = '#popovers .active #popover-html-new-id.popover.html-new-id.html-new-class';
+
+            popover.show({
+                id: 'html-new-id',
+                className: 'html-new-class',
+                html: content,
+                width: 400
+            });
+
+            expect($(selector).length).toBe(1);
+            expect($(selector).is(':visible')).toBe(true);
+            expect($(selector).css('width')).toBe('400px');
+            expect($(selector).html()).toBe(content);
+
+            outerHeight = $(selector).outerHeight();
+        });
+
+        it("should show new AJAX content", function() {
+
+            selector = '#popovers .active #popover-html-new-id.popover.html-new-id.html-new-class';
+
+            popover.show({
+                url: '/ajaxtest',
+                width: 500
+            });
+
+            expect($(selector).outerHeight()).toBe(outerHeight);
+
+            expect($(selector).length).toBe(1);
+            expect($(selector).is(':visible')).toBe(true);
+            expect($(selector).hasClass('loading')).toBe(true);
+            expect($(selector).css('width')).toBe('500px');
+            expect($(selector).html()).toBe('');
+
+            server.respond();
+
+            expect($(selector)[0].style.height).toBe('auto');
+
+            expect($(selector).is(':visible')).toBe(true);
+            expect($(selector).hasClass('loading')).toBe(false);
+            expect($(selector).css('width')).toBe('500px');
+            expect($(selector).html()).toBe(ajaxContent);
+        });
+
+
+    })
 });
