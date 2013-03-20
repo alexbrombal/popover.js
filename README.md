@@ -81,19 +81,38 @@ If it's easy enough to obtain a reference to a DOM element inside the popup (suc
 
 ### Reopening a popover
 
-You can reopen a popover that had previously been closed. Any content previously loaded, modified, or interacted with by a user (such as filling out form fields) will be retained.  Also, any events attached to DOM elements will also be retained.
-
 To reopen a popover, call the popover object's `show` method:
 
 	// Reopen an existing popup
 	myPopover.show();
 
+You can reopen a popover that had previously been closed. Any content previously loaded, modified, or interacted with by a user (such as filling out form fields) will be retained.  Also, any events attached to DOM elements will also be retained.
+
+--------------------------------
+
+You can also override existing settings by passing a new settings object to the `show()` method:
+
+	myPopover.show({
+		id: 'newID',				// Specify new popover div ID
+		className: 'newClassName',	// Specify new popover class name
+
+		url: '/path/to/content',	// Specify new AJAX content
+		// OR
+		html: 'new html content',	// Specify new HTML content
+
+		width: 500, 				// Specify new width
+
+		onContent: ...				// Specify new callback methods
+		// etc...
+	});
+
+The main benefit of specifying new properties (rather than creating an entirely new popover object) is evident when loading AJAX content. Popover.js knows that your AJAX content may take a moment to load, so **it will lock the height of the popover window before it removes the old content.** This prevents an unsightly flash of the popover having an unspecified height while the content loads.
 
 ### Multiple popovers
 
 You can create and show more than one popover at a time. The top-most popover is referred to as the "active" popover, and displays *above* the gray transparent overlay.
 
-`show()`ing a popover makes is active, placing it on the top of the stack (whether it's the first time it is being shown or a subsequent reopening).  All other popups currently visible remain visible but are placed beneath the gray overlay.
+`show()`ing a popover makes it active, placing it on the top of the stack (whether it's the first time it is being shown or a subsequent reopening).  All other popups currently visible remain visible but are placed beneath the gray overlay.
 
 If you close the active (top-most) popover, the next popover in the stack will automatically become active. Closing the last popover will cause the gray overlay to fade away.
 
