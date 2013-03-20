@@ -10,6 +10,24 @@ Content can be loaded with AJAX, plain text/html strings, or using existing DOM 
 **This utility requires [jQuery](http://jquery.com).**
 
 
+### Contents
+
+- [Usage](#usage)
+  - [Creating & showing a popover](#creating--showing-a-popover)
+  - [Closing a popover](#closing-a-popover)
+  - [Reopening a popover](#reopening-a-popover)
+  - [Multiple popovers](#multiple-popovers)
+- [Styling Your Popover](#styling-your-popover)
+- [Different Content Types](#different-content-types)
+  - [String content](#string-content)
+  - [DOM content](#dom-content)
+  - [AJAX content](#ajax-content)
+- [Settings Object](#settings-object)
+- [Popover API](#popover-api)
+  - [Constructor](#constructor)
+  - [Static methods](#static-methods)
+  - [Instance methods](#instance-methods)
+
 Usage
 -----
 
@@ -75,9 +93,57 @@ To reopen a popover, call the popover object's `show` method:
 
 You can create and show more than one popover at a time. The top-most popover is referred to as the "active" popover, and displays *above* the gray transparent overlay.
 
-`show()`ing a popover places it on the top of the stack (whether it's the first time it is being shown or a subsequent reopening).  All other popups currently visible remain visible but are placed beneath the gray overlay.
+`show()`ing a popover makes is active, placing it on the top of the stack (whether it's the first time it is being shown or a subsequent reopening).  All other popups currently visible remain visible but are placed beneath the gray overlay.
 
 If you close the active (top-most) popover, the next popover in the stack will automatically become active. Closing the last popover will cause the gray overlay to fade away.
+
+
+Styling Your Popover
+--------------------
+
+popover.js doesn't provide any default styles other than those necessary to place the popover in the middle of the page and display the dark semi-transparent overlay. So it is up to you to style your popovers.
+
+Below is the HTML markup used to contain popovers.  It is injected at the bottom of the page when the page loads.
+
+	<div id="popovers">
+		<div class="active">...</div>
+		<div class="overlay"></div>	
+		<div class="inactive>...</div>	
+	</div>
+
+You are not required to style the `overlay` div since popover.js handles it automatically, but you may override styles if you want. Keep in mind that you may need to use `!important` in your styles to override the defaults.
+
+Popovers created with popover.js will use a `<div>` element with a class of `popover`. So, to style all your popovers, you might use this selector:
+
+	#popovers .popover { ... }
+
+To style your active and inactive popovers separately, you would use this:
+
+	#popovers .active .popover { ... }
+	#popovers .inactive .popover { ... }
+
+You can provide your own IDs and/or class names by passing them to the `id` and `className` properties of the settings object:
+
+	Popover.show({
+		id: 'myPopoverID',
+		className: 'myPopoverClass',
+		// ... other properties
+	});
+
+The ID and className are both added to the popover div's class attribute.  **The ID attribute uses a prefix "popover-" with your ID** (to avoid ID collisions if you use a common word).
+
+To style this popover, you could use any of the following selectors:
+
+	// Absolute full selector (probably unnecessary)
+	#popovers #popover-myPopoverID.myPopoverClass.myPopoverID { ... }
+
+	// Select by class name
+	#popovers .myPopoverClass { ... }
+	#popovers .myPopoverID { ... }
+	
+	// Select by ID (note the additional "popover-" prefix)
+	#popover-myPopoverID { ... }
+
 
 
 
