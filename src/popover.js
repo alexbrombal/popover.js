@@ -1,64 +1,65 @@
-
 ;(function() {
-	
-	window.Popover = function(options) {
 
-		this.options = $.extend({
-			id: '',						// The id to give the popover div (prefixed with popover-).
-			className: '',				// The class to give the popover div.
-			
-			html: '',					// The html content to use in the popover. [or]
-			
-			url: '',					// The url location of the content to load via Ajax.
-			data: null,					// Optional data to pass as POST data to the Ajax request.
-			type: 'get',				// Optional ajax method type ('get' or 'post')
-			preload: true,				// If true, the url will be preloaded upon popover creation.
-										// If false, the url will be reloaded when the popover is shown.  
+    window.Popover = function(options) {
 
-            onContent: function(text) {},	// Called upon successfully loading the Ajax request, before the content is
+        this.options = $.extend({
+            id: '',                         // The id to give the popover div (prefixed with popover-).
+            className: '',                  // The class to give the popover div.
+
+            html: '',                       // The html content to use in the popover. [or]
+
+            url: '',                        // The url location of the content to load via Ajax.
+            data: null,                     // Optional data to pass as POST data to the Ajax request.
+            type: 'get',                    // Optional ajax method type ('get' or 'post')
+            preload: true,                  // If true, the url will be preloaded upon popover creation.
+                                            // If false, the url will be reloaded when the popover is shown.
+
+            onContent: function(text) {},   // Called upon successfully loading the Ajax request, before the content is
                                             // injected into the window. If text is returned from this method, it will
                                             // be injected into the window instead.
-			onInject: function() {},	    // Called whenever new html content is injected into the window, before it is visible.
-			onShow: function() {},		    // Called after the popover is shown.
-            onError: function() {},		    // Called upon failure to load the Ajax request.
-			
-			width: 400,					// The default width of the popover.
-			height: 'auto'				// The default height of the popover.
-		}, options);
-		
-		this.window = $('<div id="popover-'+this.options.id+'" class="popover '+this.options.className+' '+this.options.id+'"></div>').css({
-			position: 'absolute',
-			left: '50%',
-			width: this.options.width, 
-			height: typeof this.options.height != 'undefined' ? this.options.height : 'auto' 
-		});
-		
-		this.window.data('popover', this);
-		
-		if(this.options.html || (this.options.url && this.options.preload))
-			this._loadContent();
-	};
-	
-	Popover.queue = [];
+            onInject: function() {},        // Called whenever new html content is injected into the window, before it is visible.
+            onShow: function() {},          // Called after the popover is shown.
+            onError: function() {},         // Called upon failure to load the Ajax request.
 
-	Popover.show = function(options) {
-		return new Popover(options).show();
-	};
-	
-	Popover.close = function(obj) {
-		if(obj) Popover.get(obj).close();
-		else if(Popover.queue.length) Popover.queue[Popover.queue.length-1].close();
-	};
+            width: 400,                     // The default width of the popover.
+            height: 'auto'                  // The default height of the popover.
+        }, options);
 
-	Popover.get = function(obj) {
-		return $(obj).closest('.popover').data('popover');
-	};
+        this.window = $('<div id="popover-'+this.options.id+'" class="popover '+this.options.className+' '+this.options.id+'"></div>').css({
+            position: 'absolute',
+            left: '50%',
+            width: this.options.width,
+            height: typeof this.options.height != 'undefined' ? this.options.height : 'auto'
+        });
 
-	
-	$.extend(window.Popover.prototype, {
-		
-		show: function(options)
-		{
+        this.window.data('popover', this);
+
+        if(this.options.html || (this.options.url && this.options.preload))
+            this._loadContent();
+    };
+
+    Popover.queue = [];
+
+    Popover.show = function(options) {
+        var p = new Popover(options);
+        p.show();
+        return p;
+    };
+
+    Popover.close = function(obj) {
+        if(obj) Popover.get(obj).close();
+        else if(Popover.queue.length) Popover.queue[Popover.queue.length-1].close();
+    };
+
+    Popover.get = function(obj) {
+        return $(obj).closest('.popover').data('popover');
+    };
+
+
+    $.extend(window.Popover.prototype, {
+
+        show: function(options)
+        {
             if(options)
             {
                 if(options.id) this.window.attr('id', 'popover-'+options.id);
@@ -69,26 +70,26 @@
                 this.options = $.extend(this.options, options);
             }
 
-			if(!this.content)
-			{
-				this.load();
-				this._loadContent();
-			}
-			else
-				this._showWindow();
-			
-			return false;
-		},
+            if(!this.content)
+            {
+                this.load();
+                this._loadContent();
+            }
+            else
+                this._showWindow();
+
+            return false;
+        },
 
         /**
          * Show the window with a 'loading' class
          * @param options
          */
-		load: function()
-		{
-			this._showWindow();
-			this.window.addClass('loading').css('height', this.window.height()).html('');
-		},
+        load: function()
+        {
+            this._showWindow();
+            this.window.addClass('loading').css('height', this.window.height()).html('');
+        },
 
         /**
          * Loads the content from ajax or the html string, and injects it into the window.
@@ -97,35 +98,35 @@
          * @private
          */
         _loadContent: function()
-		{	
-			if(this.xhr) return;
-			if(this.content) return;
+        {
+            if(this.xhr) return;
+            if(this.content) return;
 
-			var _this = this;
-			var loadSuccess = function(text) {
-				_this.xhr = null;
+            var _this = this;
+            var loadSuccess = function(text) {
+                _this.xhr = null;
                 if(text) {
                     _this.content = text.jquery ? text.clone() : text;
                 }
-				if(_this.options.onContent) {
-					var newText = _this.options.onContent.call(_this, _this.content);
-					if(typeof newText !== 'undefined') _this.content = newText;
-				}
-				if(text)
-				{
+                if(_this.options.onContent) {
+                    var newText = _this.options.onContent.call(_this, _this.content);
+                    if(typeof newText !== 'undefined') _this.content = newText;
+                }
+                if(text)
+                {
                     if(_this.content.jquery)
                         _this.window.append(_this.content);
                     else
                         _this.window.html(_this.content);
-					if(_this.options.onInject)
+                    if(_this.options.onInject)
                         _this.options.onInject.call(_this);
-				}
-				_this.window.removeClass('loading').css('height', _this.options.height);
-				_this._positionWindow();
-			};
+                }
+                _this.window.removeClass('loading').css('height', _this.options.height);
+                _this._positionWindow();
+            };
 
-			if(this.options.html)
-				return loadSuccess(this.options.html);
+            if(this.options.html)
+                return loadSuccess(this.options.html);
 
             else if(this.options.url)
                 return this.xhr = $.ajax({
@@ -139,7 +140,7 @@
                         if(this.options.onError) this.options.onError(jqXHR, textStatus, errorThrown);
                     }
                 });
-		},
+        },
 
         /**
          * Makes the window visible and active
@@ -147,72 +148,72 @@
          * @param options
          * @private
          */
-		_showWindow: function()
-		{
-			$('body').addClass('popover-visible');
+        _showWindow: function()
+        {
+            $('body').addClass('popover-visible');
 
-			Popover.wrapper.css('visibility', 'visible');
-			Popover.queue = _.without(Popover.queue, this);
-			Popover.queue.push(this);
-			
-			if(Popover.queue.length > 1)
-				for(var i = 0; i < Popover.queue.length - 1; i++)
-					Popover.inactive.append(Popover.queue[i].window);
+            Popover.wrapper.css('visibility', 'visible');
+            Popover.queue = _.without(Popover.queue, this);
+            Popover.queue.push(this);
 
-			this.window.css({
-				width: this.options.width,
-				height: typeof this.options.height != 'undefined' ? this.options.height : 'auto'
-			});
-			
-			Popover.active.append(this.window);
+            if(Popover.queue.length > 1)
+                for(var i = 0; i < Popover.queue.length - 1; i++)
+                    Popover.inactive.append(Popover.queue[i].window);
 
-			this._positionWindow();
-			this.window.css('visibility', 'visible').removeClass('loading');
+            this.window.css({
+                width: this.options.width,
+                height: typeof this.options.height != 'undefined' ? this.options.height : 'auto'
+            });
 
-			if(this.options.onShow) this.options.onShow.call(this);
-		},
+            Popover.active.append(this.window);
+
+            this._positionWindow();
+            this.window.css('visibility', 'visible').removeClass('loading');
+
+            if(this.options.onShow) this.options.onShow.call(this);
+        },
 
         /**
          * Sets the position of the popover in the center of the window
          * @private
          */
-		_positionWindow: function()
-		{
-			this.window.css({
-				top: Math.max($(window).scrollTop() + 50, $(window).scrollTop() + $(window).height()/2 - (this.window.outerHeight() / 2)), 
-				'margin-left': -(this.window.outerWidth() / 2)
-			});
-		},
+        _positionWindow: function()
+        {
+            this.window.css({
+                top: Math.max($(window).scrollTop() + 50, $(window).scrollTop() + $(window).height()/2 - (this.window.outerHeight() / 2)),
+                'margin-left': -(this.window.outerWidth() / 2)
+            });
+        },
 
 
         /**
          * Close the popover. The popover is removed from the DOM but if shown again, will retain any modified state.
          * @returns {boolean}
          */
-		close: function() {
-			
-			var _this = this;
-			
-			Popover.queue = _.without(Popover.queue, this);
+        close: function() {
 
-			if(Popover.queue.length == 0) 
-			{
-				Popover.wrapper.animate({ opacity: 0 }, 'fast', function() {
+            var _this = this;
+
+            Popover.queue = _.without(Popover.queue, this);
+
+            if(Popover.queue.length == 0)
+            {
+                Popover.wrapper.animate({ opacity: 0 }, 'fast', function() {
                     _this.window.detach();
-					Popover.wrapper.css({ opacity: 1, visibility: 'hidden' });
-				});
-				$('body').removeClass('popover-visible');
-			}
-			else
-			{
+                    Popover.wrapper.css({ opacity: 1, visibility: 'hidden' });
+                });
+                $('body').removeClass('popover-visible');
+            }
+            else
+            {
                 this.window.detach();
-				for(var i = 0; i < Popover.queue.length; i++)
-					if(i < Popover.queue.length - 1) Popover.inactive.append(Popover.queue[i].window);
-					else Popover.active.append(Popover.queue[i].window);
-			}
-			
-			return false;
-		},
+                for(var i = 0; i < Popover.queue.length; i++)
+                    if(i < Popover.queue.length - 1) Popover.inactive.append(Popover.queue[i].window);
+                    else Popover.active.append(Popover.queue[i].window);
+            }
+
+            return false;
+        },
 
         /**
          * Sets the width of the popover
@@ -251,50 +252,50 @@
         find: function(selector) {
             return this.window.find(selector);
         }
-	});
-	
+    });
+
 })();
 
 
 $(function() {
 
-	Popover.active = $('<div class="active"></div>').css({
-		'z-index': 3,
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		bottom: 0,
-		width: '100%'
-	});
-	
-	Popover.overlay = $('<div class="overlay"></div>').css({
-		'z-index': 2,
-		background: '#000',
-		opacity: 0.5,
-		position: 'fixed',
-		top: 0,
-		left: 0,
-		bottom: 0,
-		width: '100%',
-		height: '100%'
-	});
-	
-	Popover.inactive = $('<div class="inactive"></div>').css({
-		'z-index': 1,
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		bottom: 0,
-		width: '100%'
-	});
-	
-	Popover.wrapper = $('<div id="popovers"></div>').css({
-		'z-index': 1000,
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		bottom: 0,
-		width: '100%',
-		visibility: 'hidden'
-	}).append(Popover.active, Popover.overlay, Popover.inactive).appendTo('body');
+    Popover.active = $('<div class="active"></div>').css({
+        'z-index': 3,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: '100%'
+    });
+
+    Popover.overlay = $('<div class="overlay"></div>').css({
+        'z-index': 2,
+        background: '#000',
+        opacity: 0.5,
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: '100%',
+        height: '100%'
+    });
+
+    Popover.inactive = $('<div class="inactive"></div>').css({
+        'z-index': 1,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: '100%'
+    });
+
+    Popover.wrapper = $('<div id="popovers"></div>').css({
+        'z-index': 1000,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: '100%',
+        visibility: 'hidden'
+    }).append(Popover.active, Popover.overlay, Popover.inactive).appendTo('body');
 });
