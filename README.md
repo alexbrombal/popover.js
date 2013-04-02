@@ -42,19 +42,19 @@ The simplest way to show a popover is with the `Popover.show` method.  This meth
 
 A simple example of this would be something like the following:
 
-	// Create and show the popover
+    // Create and show the popover
     var myPopover = Popover.show({
     	html: 'The popover content',
     	width: 400
-	});
+    });
 
 `Popover.show` will create and show the popover simultaneously. If you wish to create the popover object but not yet make it visible, simply use the `Popover` constructor:
 
-	// Create the popover but do not show it yet
+    // Create the popover but do not show it yet
     var myPopover = new Popover({
     	html: 'The popover content',
     	width: 400
-	});
+    });
 
 The properties object is described in detail below.
 
@@ -65,26 +65,26 @@ Popovers do not contain any boilerplate HTML, so there is no "close" button or o
 
 You can use the popover object you created previously:
 
-	// Close the specified popover
-	myPopover.close();
+    // Close the specified popover
+    myPopover.close();
 	
 Or, you can use the static `Popover.close()` method to close the currently active popover:
 
-	// Close the currently active popover
-	Popover.close();
+    // Close the currently active popover
+    Popover.close();
 	
 If it's easy enough to obtain a reference to a DOM element inside the popup (such as on a click event), you can also pass it to the static `Popover.close` method and it will close the popover containing that element:
 
-	// Close the popover containing "this" DOM element
-	Popover.close(this);
+    // Close the popover containing "this" DOM element
+    Popover.close(this);
 	
 
 ### Reopening a popover
 
 To reopen a popover, call the popover object's `show` method:
 
-	// Reopen an existing popup
-	myPopover.show();
+    // Reopen an existing popup
+    myPopover.show();
 
 You can reopen a popover that had previously been closed. Any content previously loaded, modified, or interacted with by a user (such as filling out form fields) will be retained.  Also, any events attached to DOM elements will also be retained.
 
@@ -92,19 +92,19 @@ You can reopen a popover that had previously been closed. Any content previously
 
 You can also override existing settings by passing a new settings object to the `show()` method:
 
-	myPopover.show({
-		id: 'newID',				// Specify new popover div ID
-		className: 'newClassName',	// Specify new popover class name
+    myPopover.show({
+        id: 'newID',			// Specify new popover div ID
+        className: 'newClassName',	// Specify new popover class name
 
-		url: '/path/to/content',	// Specify new AJAX content
-		// OR
-		html: 'new html content',	// Specify new HTML content
+        url: '/path/to/content',	// Specify new AJAX content
+        // OR
+        html: 'new html content',	// Specify new HTML content
 
-		width: 500, 				// Specify new width
+        width: 500, 			// Specify new width
 
-		onContent: ...				// Specify new callback methods
-		// etc...
-	});
+        onContent: ...			// Specify new callback methods
+        // etc...
+    });
 
 The main benefit of specifying new properties (rather than creating an entirely new popover object) is evident when loading AJAX content. Popover.js knows that your AJAX content may take a moment to load, so **it will lock the height of the popover window before it removes the old content.** This prevents an unsightly flash of the popover having an unspecified height while the content loads.
 
@@ -124,44 +124,44 @@ popover.js doesn't provide any default styles other than those necessary to plac
 
 Below is the HTML markup used to contain popovers.  It is injected at the bottom of the page when the page loads.
 
-	<div id="popovers">
-		<div class="active">...</div>
-		<div class="overlay"></div>	
-		<div class="inactive>...</div>	
-	</div>
+    <div id="popovers">
+        <div class="active">...</div>
+        <div class="overlay"></div>	
+        <div class="inactive>...</div>	
+    </div>
 
 You are not required to style the `overlay` div since popover.js handles it automatically, but you may override styles if you want. Keep in mind that you may need to use `!important` in your styles to override the defaults.
 
 Popovers created with popover.js will use a `<div>` element with a class of `popover`. So, to style all your popovers, you might use this selector:
 
-	#popovers .popover { ... }
+    #popovers .popover { ... }
 
 To style your active and inactive popovers separately, you would use this:
 
-	#popovers .active .popover { ... }
-	#popovers .inactive .popover { ... }
+    #popovers .active .popover { ... }
+    #popovers .inactive .popover { ... }
 
 You can provide your own IDs and/or class names by passing them to the `id` and `className` properties of the settings object:
 
-	Popover.show({
-		id: 'myPopoverID',
-		className: 'myPopoverClass',
-		// ... other properties
-	});
+    Popover.show({
+        id: 'myPopoverID',
+        className: 'myPopoverClass',
+        // ... other properties
+    });
 
 The ID and className are both added to the popover div's class attribute.  **The ID attribute uses a prefix "popover-" with your ID** (to avoid ID collisions if you use a common word).
 
 To style this popover, you could use any of the following selectors:
 
-	// Absolute full selector (probably unnecessary)
-	#popovers #popover-myPopoverID.myPopoverClass.myPopoverID { ... }
+    // Absolute full selector (probably unnecessary)
+    #popovers #popover-myPopoverID.myPopoverClass.myPopoverID { ... }
 
-	// Select by class name
-	#popovers .myPopoverClass { ... }
-	#popovers .myPopoverID { ... }
+    // Select by class name
+    #popovers .myPopoverClass { ... }
+    #popovers .myPopoverID { ... }
 	
-	// Select by ID (note the additional "popover-" prefix)
-	#popover-myPopoverID { ... }
+    // Select by ID (note the additional "popover-" prefix)
+    #popover-myPopoverID { ... }
 
 
 
@@ -240,6 +240,8 @@ The settings object that you pass to the `show()` method can have the following 
 - `data` - Optional data to pass as POST data to the AJAX request.
 
 - `type` - Optional AJAX method type ('get' or 'post', default: 'get')
+
+- `cache` - Whether to allow the ajax call to cache the response content
 
 - `preload` - If true, the url will be preloaded upon popover creation. If false, the url will be reloaded when the popover is shown.  
 
