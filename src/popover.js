@@ -11,6 +11,7 @@
             url: '',                        // The url location of the content to load via Ajax.
             data: null,                     // Optional data to pass as POST data to the Ajax request.
             type: 'get',                    // Optional ajax method type ('get' or 'post')
+            cache: false,                   // Whether to allow cache for ajax calls
             preload: true,                  // If true, the url will be preloaded upon popover creation.
                                             // If false, the url will be reloaded when the popover is shown.
 
@@ -133,6 +134,7 @@
                     url: this.options.url,
                     data: this.options.data,
                     type: this.options.type,
+                    cache: !!this.options.cache,
                     dataType: 'text',
                     cache: false,
                     success: loadSuccess,
