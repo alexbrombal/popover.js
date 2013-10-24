@@ -229,6 +229,8 @@ The settings object that you pass to the `show()` method can have the following 
   
 - `className` - The class to give the popover div.
 
+- `bodyClass` - A custom class to add to the body when the popover is visible
+- 
 - `width` - The default width of the popover (default: 400px).
 
 - `height` - The default height of the popover (default: 'auto').
