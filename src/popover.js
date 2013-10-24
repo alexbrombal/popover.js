@@ -274,10 +274,9 @@ $(function() {
         'z-index': 2,
         background: '#000',
         opacity: 0.5,
-        position: 'fixed',
+        position: typeof window.orientation !== 'undefined' ? 'absolute' : 'fixed',
         top: 0,
         left: 0,
-        bottom: 0,
         width: '100%',
         height: '100%'
     });
@@ -296,8 +295,8 @@ $(function() {
         position: 'absolute',
         top: 0,
         left: 0,
-        bottom: 0,
         width: '100%',
+        height: typeof window.orientation !== 'undefined' ? $(document).height() : '100%',
         visibility: 'hidden'
     }).append(Popover.active, Popover.overlay, Popover.inactive).appendTo('body');
 });
