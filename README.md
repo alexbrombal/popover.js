@@ -169,7 +169,7 @@ To style this popover, you could use any of the following selectors:
 Different Content Types
 -----------------------
 
-You can show content using a just string, DOM content, or via an AJAX call.
+You can show content using a string, DOM content, or via an AJAX call.
 
 
 ### String content
@@ -230,7 +230,7 @@ The settings object that you pass to the `show()` method can have the following 
 - `className` - The class to give the popover div.
 
 - `bodyClass` - A custom class to add to the body when the popover is visible
-- 
+
 - `width` - The default width of the popover (default: 400px).
 
 - `height` - The default height of the popover (default: 'auto').
