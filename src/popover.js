@@ -5,6 +5,7 @@
         this.options = $.extend({
             id: '',                         // The id to give the popover div (prefixed with popover-).
             className: '',                  // The class to give the popover div.
+            bodyClass: '',                  // A custom class to add to the body when the popover is visible
 
             html: '',                       // The html content to use in the popover. [or]
 
@@ -152,9 +153,13 @@
          */
         _showWindow: function()
         {
-            $('body').addClass('popover-visible');
+            $('body').addClass('popover-visible').addClass(this.options.bodyClass);
 
             Popover.wrapper.css('visibility', 'visible');
+            
+            if(typeof window.orientation !== 'undefined')
+                Popover.wrapper.css('height', $(document).height());
+
             Popover.queue = _.without(Popover.queue, this);
             Popover.queue.push(this);
 
@@ -204,7 +209,7 @@
                     _this.window.detach();
                     Popover.wrapper.css({ opacity: 1, visibility: 'hidden' });
                 });
-                $('body').removeClass('popover-visible');
+                $('body').removeClass('popover-visible').removeClass(_this.options.bodyClass);
             }
             else
             {
@@ -299,4 +304,22 @@ $(function() {
         height: typeof window.orientation !== 'undefined' ? $(document).height() : '100%',
         visibility: 'hidden'
     }).append(Popover.active, Popover.overlay, Popover.inactive).appendTo('body');
+    
+    $(document.body).on('keydown', '.popover :input:first', function (e) {
+        if(e.keyCode == 9 && e.shiftKey) {
+            $(e.target).closest('.popover').find(':input:last').focus();
+            return false;
+        }
+    });
+
+    $(document.body).on('keydown', '.popover :input:last', function (e) {
+        if(e.keyCode == 9 && !e.shiftKey) {
+            $(e.target).closest('.popover').find(':input:first').focus();
+            return false;
+        }
+    });
+
+    $(window).on('resize', function () {
+        Popover.wrapper.css('height', $(document).height());
+    });
 });
