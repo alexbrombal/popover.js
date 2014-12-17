@@ -351,14 +351,14 @@ $(function () {
         visibility: 'hidden'
     }).append(Popover.active, Popover.overlay, Popover.inactive).appendTo('body');
 
-    $(document.body).on('keydown', '.popover :input:first', function (e) {
+    $(Popover.wrapper).on('keydown', '.popover :input:first', function (e) {
         if(e.keyCode == 9 && e.shiftKey) {
             $(e.target).closest('.popover').find(':input:last').focus();
             return false;
         }
     });
 
-    $(document.body).on('keydown', '.popover :input:last', function (e) {
+    $(Popover.wrapper).on('keydown', '.popover :input:last', function (e) {
         if(e.keyCode == 9 && !e.shiftKey) {
             $(e.target).closest('.popover').find(':input:first').focus();
             return false;
