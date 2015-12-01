@@ -208,10 +208,13 @@ https://github.com/alexbrombal/popover.js
                 for (var i = 0; i < Popover.queue.length - 1; i++)
                     Popover.inactive.append(Popover.queue[i].window);
 
-            this.window.css({
-                width: this.options.width,
-                height: typeof this.options.height != 'undefined' ? this.options.height : 'auto'
+            this.window.css('height', typeof this.options.height != 'undefined' ? this.options.height : 'auto');
+
+            var self = this;
+            $(window).on('resize', function() {
+                self._onWindowResize();
             });
+            self._onWindowResize();
 
             Popover.active.append(this.window);
 
@@ -224,6 +227,22 @@ https://github.com/alexbrombal/popover.js
             });
 
             if (this.options.onShow) this.options.onShow.call(this);
+
+        },
+
+        _onWindowResize: function() {
+            if ($(window).width() < this.options.width)
+                this.window.css({
+                    width: '100%',
+                    left: 0,
+                    'margin-left': 0
+                });
+            else
+                this.window.css({
+                    width: this.options.width,
+                    left: '50%',
+                    'margin-left': -(this.window.outerWidth() / 2)
+                });
         },
 
         /**
@@ -231,10 +250,8 @@ https://github.com/alexbrombal/popover.js
         * @private
         */
         _positionWindow: function () {
-            this.window.css({
-                top: Math.max($(window).scrollTop() + 50, $(window).scrollTop() + $(window).height() / 2 - (this.window.outerHeight() / 2)),
-                'margin-left': -(this.window.outerWidth() / 2)
-            });
+            this.window.css('top', Math.max($(window).scrollTop() + 50, $(window).scrollTop() + $(window).height() / 2 - (this.window.outerHeight() / 2))),
+            this._onWindowResize();
         },
 
 
@@ -318,6 +335,9 @@ $(function () {
         left: 0,
         bottom: 0,
         width: '100%'
+    }).on('click', function(e) {
+        if (e.target === this)
+            Popover.close();
     });
 
     Popover.overlay = $('<div class="overlay"></div>').css({
@@ -330,7 +350,7 @@ $(function () {
         bottom: 0,
         width: '100%',
         height: '100%'
-    });
+    }).on('click', Popover.close);
 
     Popover.inactive = $('<div class="inactive"></div>').css({
         'z-index': 1,
