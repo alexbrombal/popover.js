@@ -1,6 +1,10 @@
 popover.js
 ==========
 
+### Archived
+
+***This project has been archived for historical, portfolio, and demonstration purposes. It is no longer maintained.***
+
 popover.js is a JavaScript popup/lightbox utility that allows loading any content into an un-styled popup window.
 
 popover.js provides the basic styles to position the popup and display a dark transparent overlay to draw focus away from the page beneath.  Any other styles are left to you.
